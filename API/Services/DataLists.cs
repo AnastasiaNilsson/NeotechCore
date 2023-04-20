@@ -1,6 +1,4 @@
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace NeotechAPI.Services;
 
@@ -34,9 +32,9 @@ public class DataLists
 
     private Task<HttpResponseMessage> GetGoogleSheet(string sheetName)
     {
-        var sheetUrl = $"{_googleSheetsUrl}/${_spreadsheet}/values/${sheetName}?alt=json&key=${_googleApiKey}";
+        var sheetUrl = $"{_googleSheetsUrl}/{_spreadsheet}/values/{sheetName}?alt=json&key={_googleApiKey}";
         if (sheetName == "Names") sheetUrl += "&majorDimension=COLUMNS";
-        return _client.GetAsync(sheetName); //.ContinueWith(response => process(response))
+        return _client.GetAsync(sheetUrl); //.ContinueWith(response => process(response))
     }
 
     private async Task<GoogleResponse?> Deserialize(Task<HttpResponseMessage> response)
@@ -57,13 +55,10 @@ public class DataLists
         public List<object> Values { get; set; }
     }
 
-    private async Task UpdateData(string sheetName)
+    public async Task<HttpResponseMessage> Update(string sheetName)
     {
-        var generationsTask = GetGoogleSheet("Generations");
-        
-        var data = generationsTask.Result;
-
-        return;
+        var generationsTask = await GetGoogleSheet("Generations");
+        return generationsTask;
     }
 }
         // .ContinueWith(async antecedent => {
