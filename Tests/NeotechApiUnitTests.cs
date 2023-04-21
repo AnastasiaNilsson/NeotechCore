@@ -2,13 +2,16 @@
 
 namespace Tests;
 
-public class UnitTest1
+public class NeotechApiUnitTests
 {
+    private IConfiguration _config;
+    public NeotechApiUnitTests(IConfiguration config) => _config = config;
+
     [Fact]
     public void ShouldReceiveOkResponseFromGoogle()
     {
         // arrange
-        var datalists = new DataLists();
+        var datalists = new DataLists(_config);
 
         // act
         var responseCode = datalists.Update("Generations").Result.StatusCode;

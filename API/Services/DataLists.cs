@@ -4,37 +4,40 @@ namespace NeotechAPI.Services;
 
 public class DataLists
 {
-    private string _googleSheetsUrl = $"https://sheets.googleapis.com/v4/spreadsheets";
-    private string _googleApiKey = "AIzaSyCCY8VTIP9k_Rud3BIH9OQqUDd2H5a46Iw";
-    private string _spreadsheet = "1C5qMHMLMUTbL6cfPS6tKieNTm50tm6VGgb8oV4UWCSs";
+    public List<string> Generations { get; set; }
+    public List<string> Origins { get; set; }
+    public List<string> Spheres { get; set; }
+    public List<string> Contracts { get; set; }
+    public List<string> Experiences { get; set; }
+    public List<string> UrgesAndTrips { get; set; }
+    public List<string> Networks { get; set; }
+    public List<string> Expertises { get; set; }
+    public List<string> Genders { get; set; }
+    public List<string> Names { get; set; }
+    public List<string> BirthLottery { get; set; }
+    public List<string> Genes { get; set; }
+    public List<string> TraumaCard { get; set; }
+    public DateTime LastUpdated { get; set; }
+
+
+    private IConfiguration _config;
     private HttpClient _client { get; set; }
-
-    List<string> Generations { get; set; }
-    List<string> Origins { get; set; }
-    List<string> Spheres { get; set; }
-    List<string> Contracts { get; set; }
-    List<string> Experiences { get; set; }
-    List<string> UrgesAndTrips { get; set; }
-    List<string> Networks { get; set; }
-    List<string> Expertises { get; set; }
-    List<string> Genders { get; set; }
-    List<string> Names { get; set; }
-    List<string> BirthLottery { get; set; }
-    List<string> Genes { get; set; }
-    List<string> TraumaCard { get; set; }
-    DateTime LastUpdated { get; set; }
-
-    public DataLists()
+    public DataLists(IConfiguration config)
     {
         _client = new HttpClient();
-
+        _config = config;
     }
 
     private Task<HttpResponseMessage> GetGoogleSheet(string sheetName)
     {
-        var sheetUrl = $"{_googleSheetsUrl}/{_spreadsheet}/values/{sheetName}?alt=json&key={_googleApiKey}";
+        var googleUrl = "https://sheets.googleapis.com/v4/spreadsheets";
+        var googleApiKey = _config["GoogleApiKey"];
+        var googleSpreadsheetId = _config["GoogleSpreadsheetId"];
+
+        var sheetUrl = $"{googleUrl}/{googleSpreadsheetId}/values/{sheetName}?alt=json&key={googleApiKey}";
         if (sheetName == "Names") sheetUrl += "&majorDimension=COLUMNS";
-        return _client.GetAsync(sheetUrl); //.ContinueWith(response => process(response))
+
+        return _client.GetAsync(sheetUrl);
     }
 
     private async Task<GoogleResponse?> Deserialize(Task<HttpResponseMessage> response)
