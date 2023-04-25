@@ -1,10 +1,12 @@
 
+using System.Collections.Generic;
+using System.Net;
 
 namespace NeotechAPI.Services;
 
 public class DataLists
 {
-    public List<string> Generations { get; set; }
+    public List<Generation> Generations { get; set; } = new List<Generation>();
     public List<string> Origins { get; set; }
     public List<string> Spheres { get; set; }
     public List<string> Contracts { get; set; }
@@ -40,67 +42,103 @@ public class DataLists
         return _client.GetAsync(sheetUrl);
     }
 
-    private async Task<GoogleResponse?> Deserialize(Task<HttpResponseMessage> response)
+    private async Task<List<List<string>>> Deserialize(HttpResponseMessage response)
     {
-        return await JsonSerializer.DeserializeAsync<GoogleResponse>(await response.Result.Content.ReadAsStreamAsync());
+        var deserializedResponse = await JsonSerializer.DeserializeAsync<GoogleResponse>(await response.Content.ReadAsStreamAsync());
+        return deserializedResponse?.Values ?? new List<List<string>>();
     }
 
 
     public class GoogleResponse
     {
         [JsonPropertyName("values")]
-        public List<object> Values { get; set; }
+        public List<List<string>> Values { get; set; }
     }
 
-    public class GoogleResponseGeneration
+
+    public async Task<HttpStatusCode> Download(string sheetName)
     {
-        [JsonPropertyName("values")]
-        public List<object> Values { get; set; }
+        var response = await GetGoogleSheet(sheetName);
+        var sheet = await Deserialize(response);
+        if (!sheet.Any()) return response.StatusCode;
+
+        var processedSheet = ProcessSheet(sheet);
+        processedSheet.ForEach(row =>
+        {
+            switch (sheetName)
+            {
+                case "Generations": Generations.Add(new Generation(row)); break;
+
+                // case "Generations": Generations.Add(new Generation(row)); break;
+                // case "Spheres": Spheres.Add(new Sphere(row)); break;
+                // case "Origins": Origins.Add(new Origin(row)); break;
+                // case "Genders": Genders.Add(new Gender(row)); break;
+
+                // case "Contracts": Contracts.Add(new Contract(row)); break;
+                // case "Experiences": Experiences.Add(new Experience(row)); break;
+
+                // case "UrgesAndTrips": UrgesAndTrips.Add(new UrgeAndTrip(row)); break;  // This one is probably different!
+                // case "Names": Names.Add(new Name(row)); break;                       // This one is definitely different!
+
+                // case "Networks": Networks.Add(new Network(row)); break;
+                // case "Expertises": Expertises.Add(new Expertise(row)); break;
+
+                
+
+                
+                // case "BirthLottery": BirthLottery.Add(new BirthLottery(row)); break;
+                // case "Genes": Genes.Add(new Genes(row)); break;
+                // case "TraumaCard": TraumaCard.Add(new TraumaCard(row)); break;
+            }
+        });
+        return HttpStatusCode.OK;
     }
 
-    public async Task<HttpResponseMessage> Update(string sheetName)
+
+
+
+
+
+
+    //     const formattedData = this.genericList(allRows);
+    //     formattedData.forEach(row =>
+    //     {
+    //         row["attributes"] = Array.from(row["attributes"].slice(1, row["attributes"].length - 1).split(", ").map(attribute => parseInt(attribute)));
+    //     });
+    //     return formattedData;
+    // });
+
+    // Amend the name of a sheet or column to work as a variable name  
+    private string AmendColumnName(string name)
     {
-        var generationsTask = await GetGoogleSheet("Generations");
-        return generationsTask;
+        name = name.Replace(" & ", "And");
+        name = name.Replace("'s ", "");
+        name = name.Replace(" ", "");
+        name = name.Replace(" ", "");
+        //if (name == "UUID") name.ToLower();
+        //name = name.ElementAt(0).ToString().ToLower() + name.Substring(1);
+        return name;
+    }
+
+    private List<Dictionary<string, string>> ProcessSheet(List<List<string>> allRows)
+    {
+        var formattedRows = new List<Dictionary<string, string>>();
+
+        var headers = allRows.First();
+        //headers.Select(header => AmendColumnName(header));
+        allRows.RemoveAt(0);
+        allRows.ForEach(row =>
+        {
+            var formattedRow = new Dictionary<string, string>();
+            row.Select((field, index) => new { field, index })
+               .ToList()
+               .ForEach(item => formattedRow[headers[item.index]] = item.field);
+            formattedRows.Add(formattedRow);
+        });
+
+        return formattedRows;
     }
 }
-        // .ContinueWith(async antecedent => {
-        //     var generations = Deserialize(antecedent).Result?.Values.Select(value => value as GoogleResponseGeneration);
-        // }
-
-
-
-
-
-            // const formattedData = this.genericList(allRows);
-        //     formattedData.forEach(row =>
-        //     {
-        //         row["attributes"] = Array.from(row["attributes"].slice(1, row["attributes"].length - 1).split(", ").map(attribute => parseInt(attribute)));
-        //     });
-        //     return formattedData;
-        // });
-
-
-//     ProcessGenericList(allRows)
-//     {
-//             var formattedData = new List<string>();
-//             const headers = allRows.shift();
-//             const renamedHeaders = [];
-//             for (let header of headers)
-//             {
-//                 renamedHeaders.push(this.amendSheetOrColumnName(header));
-//             }
-//             allRows.forEach(row =>
-//             {
-//                 const rowData = { };
-//                 row.forEach((item, index) =>
-//                 {
-//                     rowData[renamedHeaders[index]] = item;
-//                 });
-//                 formattedData.push(rowData);
-//             });
-//             return formattedData;
-//         }
 
 
 //         Generations =
@@ -152,17 +190,7 @@ public class DataLists
 //     // });
 
 
-//     // Amend the name of a sheet or column to work as a variable name  
-//     private string AmendSheetOrColumnName(string name)
-//     {
-//         name = name.Replace(" & ", "And");
-//         name = name.Replace("'s ", "");
-//         name = name.Replace(" ", "");
-//         name = name.Replace(" ", "");
-//         if (name == "UUID") name.ToLower();
-//         name = name.ElementAt(0).ToString().ToLower() + name.Substring(1);
-//         return name;
-//     }
+//     
 
 //     ProcessGenerationList(allRows)
 //     {

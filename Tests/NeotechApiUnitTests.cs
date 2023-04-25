@@ -1,5 +1,7 @@
 
 using Microsoft.Extensions.Configuration;
+using System.Text.Json;
+using static NeotechAPI.Services.DataLists;
 
 namespace Tests;
 
@@ -21,9 +23,26 @@ public class NeotechApiUnitTests
         var datalists = new DataLists(_config);
 
         // act
-        var responseCode = datalists.Update("Generations").Result.StatusCode;
+        var responseCode = datalists.Download("Generations").Result;
 
         // assert
         responseCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Fact]
+    public async void ShouldGetDataFromGoogle()
+    {
+        // arrange
+        var datalists = new DataLists(_config);
+
+        // act
+        var responseCode = await datalists.Download("Generations");
+
+        // assert
+        responseCode.Should().Be(HttpStatusCode.OK);
+        datalists.Generations.Should().NotBeEmpty();
+
+        // print
+        datalists.Generations.ForEach(value => Console.WriteLine(value.ToString()));
     }
 }
