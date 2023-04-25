@@ -1,11 +1,18 @@
 
+using Microsoft.Extensions.Configuration;
 
 namespace Tests;
 
 public class NeotechApiUnitTests
 {
-    private IConfiguration _config;
-    public NeotechApiUnitTests(IConfiguration config) => _config = config;
+    private readonly IConfiguration _config;
+    public NeotechApiUnitTests() 
+    {
+        _config = new ConfigurationBuilder()
+            //.SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.Development.json")
+            .Build();
+    }
 
     [Fact]
     public void ShouldReceiveOkResponseFromGoogle()
