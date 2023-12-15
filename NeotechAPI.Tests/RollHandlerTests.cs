@@ -20,7 +20,7 @@ public class DiceHandlerests
         var roll = preliminaryRoll.FinalizePrelinaryRoll();
 
         // Assert
-        roll.Should().BeOfType<Roll>();
+        roll.Should().BeOfType<FinalRoll>();
         roll.Dice.Count().Should().Be(2);
     }
 

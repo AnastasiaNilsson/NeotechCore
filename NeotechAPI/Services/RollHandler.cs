@@ -2,9 +2,10 @@
 namespace Services.Dice;
 
 // Refactor: Look at implementing a RolledDie class instead of these nested arrays
+// Refactir; Simplify the damn rolls. Explosions should cone after selection!
 public static class RollHandler
 {
-    public static Roll FinalizePrelinaryRoll(this PreliminaryRoll preliminaryRoll, (int, int)? selectedBaseDiceIndex = null, bool explodingDice = true)
+    public static FinalRoll FinalizePrelinaryRoll(this PreliminaryRoll preliminaryRoll, (int, int)? selectedBaseDiceIndex = null, bool explodingDice = true)
     {
         var baseDice = preliminaryRoll.UseAutoDice == true || selectedBaseDiceIndex == null ? 
                        preliminaryRoll.HighestBaseDice() :
@@ -25,7 +26,7 @@ public static class RollHandler
                 break;
         }  
 
-        return new Roll(finalDice.ToArray(), baseDiceAreEqual);
+        return new FinalRoll(finalDice.ToArray(), baseDiceAreEqual);
     }
 
     public static bool EqualBaseDicePassesSkillCheck(this PreliminaryRoll preliminaryRoll, int difficulty = 20)

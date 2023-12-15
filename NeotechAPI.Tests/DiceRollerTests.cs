@@ -16,7 +16,7 @@ public class DiceRollerTests
         // Act
         foreach (var _ in Enumerable.Range(1,100))
         {
-            resultList.Add(_diceService.RollOne(Die.d10));
+            resultList.Add(_diceService.RollOne(DiceType.d10));
         }
 
         // Assert

@@ -1,10 +1,10 @@
 namespace Services.Dice;
 
-public class Roll
+public class FinalRoll
 {
     public int[] Dice {get;}
     public bool BaseDiceAreEqual {get;}
-    public Roll(int[] dice, bool baseDiceAreEqual)
+    public FinalRoll(int[] dice, bool baseDiceAreEqual)
     {
         Dice = dice;
         BaseDiceAreEqual = baseDiceAreEqual;

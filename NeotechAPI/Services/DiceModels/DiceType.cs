@@ -1,6 +1,6 @@
 namespace Services.Dice;
 
-public enum Die
+public enum DiceType
 {
     d10 = 10,
     d100 = 100
