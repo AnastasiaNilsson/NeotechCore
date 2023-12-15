@@ -1,20 +1,25 @@
-
 namespace Services.Dice;
 
-public class DiceRoller
+public static class DiceRoller
 {
-    private Random _random;
-    public DiceRoller() => _random = new Random();
+    private static Random _random = new Random();
 
-    public int RollOne(DiceType numberOfSides) => _random.Next(1, (int)numberOfSides + 1);
+    public static int RollOne(DiceType numberOfSides) => _random.Next(1, (int)numberOfSides + 1);
 
-    public void ExplodeDice(List<int> dice, bool doubleChance = false)
+    public static PreliminaryRoll Roll(int? extraDice = null, bool useAutoDice = false)
     {
-        var numberOfTens = dice.Where(die => die == 10).Count();
-        numberOfTens += doubleChance ?
-                        dice.Where(die => die == 9).Count() :
-                        0;
-        
+        var diceToRoll = 2 + (extraDice ?? 0);
+        var roll = Enumerable.Range(1, diceToRoll).Select(_ => RollOne(DiceType.d10)).ToArray();
+   
+        return new PreliminaryRoll(roll, useAutoDice);
+    }
+
+    public static int[] Explode(this PreliminaryRoll roll, bool doubleChance = false)
+    {
+        var numberOfTens = roll.Dice.Where(die => die == 10).Count();
+            numberOfTens += doubleChance ? roll.Dice.Where(die => die == 9).Count() : 0;
+
+        var explosions = new List<int>();
         for (var iteration = 1; iteration <= numberOfTens; iteration++)
         {
             var result = RollOne(DiceType.d10);
@@ -22,26 +27,8 @@ public class DiceRoller
             {
                 numberOfTens++;
             }
-            dice.Add(result);
+            explosions.Add(result);
         }
-    }
-
-    public PreliminaryRoll RollDice(int? extraDice = null, bool useAutoDice = false)
-    {
-        var diceToRoll = 2 + (extraDice ?? 0);
-
-        var diceRolls = Enumerable.Range(1, diceToRoll).Select(_ => {
-            var rolls = new List<int>();
-
-            int roll;
-            do {
-                roll = RollOne(DiceType.d10);
-                rolls.Add(roll);
-            } while (roll == 10);
-
-            return rolls.ToArray();
-        }).ToArray();
-
-        return new PreliminaryRoll(diceRolls, useAutoDice);
+        return explosions.ToArray();
     }
 }

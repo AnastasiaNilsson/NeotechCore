@@ -3,17 +3,13 @@ using Services.Dice;
 
 namespace NeotechAPI.Tests;
 
-public class DiceHandlerests
+public class RollHandlerTests
 {
     [Fact]
     public void FinalizePrelinaryRoll_ShouldReturn_Roll()
     {
         // Arrange
-        var dice = new int[][] 
-        {
-            new int[] {6},
-            new int[] {9},
-        };
+        var dice = new int[] {6, 9};
         var preliminaryRoll = new PreliminaryRoll(dice, false);
 
         // Act
@@ -28,12 +24,7 @@ public class DiceHandlerests
     public void FinalizePrelinaryRoll_WithNoParameters_ShouldReturn_HighestRoll()
     {
         // Arrange
-        var dice = new int[][] 
-        {
-            new int[] {6},
-            new int[] {9},
-            new int[] {1},
-        };
+        var dice = new int[] {6, 9, 1};
         var preliminaryRoll = new PreliminaryRoll(dice, false);
 
         // Act
@@ -49,21 +40,31 @@ public class DiceHandlerests
     public void FinalizePrelinaryRoll_WithAutoDice_ShouldReturn_HighestRoll()
     {
         // Arrange
-        var dice = new int[][] 
-        {
-            new int[] {9},
-            new int[] {6},
-            new int[] {1}, 
-            new int[] {10, 1}, 
-            new int[] {9}, 
-        };
+        var dice = new int[] {9, 6, 1, 10, 9};
         var preliminaryRoll = new PreliminaryRoll(dice, true);
 
         // Act
         var roll = preliminaryRoll.FinalizePrelinaryRoll();
 
         // Assert
-        roll.Dice.Count().Should().Be(3);
-        roll.BaseDiceAreEqual.Should().BeFalse();
+        roll.Dice.Count().Should().BeGreaterThanOrEqualTo(3);
+        roll.Dice[0].Should().Be(9);
+        roll.Dice[1].Should().Be(10);
+    }
+
+        [Fact]
+    public void FinalizePrelinaryRoll_WithAutoDice_ShouldReturn_HighestRoll()
+    {
+        // Arrange
+        var dice = new int[] {9, 6, 1, 10, 9};
+        var preliminaryRoll = new PreliminaryRoll(dice, true);
+
+        // Act
+        var roll = preliminaryRoll.FinalizePrelinaryRoll();
+
+        // Assert
+        roll.Dice.Count().Should().BeGreaterThanOrEqualTo(3);
+        roll.Dice[0].Should().Be(9);
+        roll.Dice[1].Should().Be(10);
     }
 }
