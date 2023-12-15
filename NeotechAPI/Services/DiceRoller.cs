@@ -21,8 +21,8 @@ public class DiceRoller
                 rolls.Add(roll);
             } while (roll == 10);
 
-            return rolls;
-        }).ToList();
+            return rolls.ToArray();
+        }).ToArray();
 
         return new PreliminaryRoll(diceRolls, useAutoDice);
     }

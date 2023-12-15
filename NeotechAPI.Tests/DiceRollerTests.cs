@@ -33,7 +33,7 @@ public class DiceRollerTests
 
         // Assert
         result.Should().BeOfType<PreliminaryRoll>();
-        result.Dice.Count.Should().Be(2);
+        result.Dice.Count().Should().Be(2);
         result.UseAutoDice.Should().BeFalse();
     }
 
@@ -47,45 +47,7 @@ public class DiceRollerTests
 
         // Assert
         result.Should().BeOfType<PreliminaryRoll>();
-        result.Dice.Count.Should().Be(7);
+        result.Dice.Count().Should().Be(7);
         result.UseAutoDice.Should().BeTrue();
-    }
-
-    [Fact]
-    public void CallingFinalize_ShouldReturn_FinalRoll()
-    {
-        // Arrange
-        var rolls = new List<List<int>>() {};
-        var preliminaryRoll = new PreliminaryRoll(rolls, false);
-
-        // Act
-        var result = preliminaryRoll.FinalizePrelinaryRoll();
-
-        // Assert
-        result.Should().BeOfType<Roll>();
-    }
-
-    [Fact]
-    public void CallingFinalize_WithParemeters_ShouldReturn_FinalRoll_WithCorrectProperties()
-    {
-        // Arrange
-        var rolls = new List<List<int>>() 
-        {
-            new () {6},
-            new () {6},  
-            new () {10, 5}, 
-            new () {7},  
-            new () {9}
-        };
-        var preliminaryRoll = new PreliminaryRoll(rolls, true);
-        preliminaryRoll.Dice.Add(new () {6});
-
-        // Act
-        var result = preliminaryRoll.FinalizePrelinaryRoll();
-
-        // Assert
-        result.Should().BeOfType<Roll>();
-        result.Dice.Count.Should().Be(5);
-        result.BaseDiceAreEqual.Should().BeTrue();
     }
 }

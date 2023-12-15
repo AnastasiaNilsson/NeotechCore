@@ -2,9 +2,9 @@ namespace Services.Dice;
 
 public class Roll
 {
-    public List<int> Dice {get;}
+    public int[] Dice {get;}
     public bool BaseDiceAreEqual {get;}
-    public Roll(List<int> dice, bool baseDiceAreEqual) 
+    public Roll(int[] dice, bool baseDiceAreEqual)
     {
         Dice = dice;
         BaseDiceAreEqual = baseDiceAreEqual;
