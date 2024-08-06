@@ -1,4 +1,4 @@
-namespace Services.Dice;
+namespace Neotech.DiceModels;
 
 public enum DiceType
 {
