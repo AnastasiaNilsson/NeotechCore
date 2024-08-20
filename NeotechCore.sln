@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeotechAPI", "NeotechAPI\NeotechAPI.csproj", "{4C5B484C-D57A-46F5-B7D6-C99A4AB8E91B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeotechCore.API", "NeotechCore.API\NeotechCore.API.csproj", "{4C5B484C-D57A-46F5-B7D6-C99A4AB8E91B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeotechAPI.Tests", "NeotechAPI.Tests\NeotechAPI.Tests.csproj", "{299B9396-715B-444C-9087-E1FBFDAFD219}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeotechCore.Tests", "NeotechCore.Tests\NeotechCore.Tests.csproj", "{299B9396-715B-444C-9087-E1FBFDAFD219}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
