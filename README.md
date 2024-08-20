@@ -1,4 +1,4 @@
-# NeotechAPI
+# NeotechCoreAPI
 
 Neotech Edge is a cyberpunk TTRPG published by [Helmgast AB](https://helmgast.se/).
 This project serves as a launching point for creating a unified API for all digital services created for this game.
