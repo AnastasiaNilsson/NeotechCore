@@ -1,6 +1,6 @@
-namespace Neotech.Models;
+namespace NeotechCore.API.Models;
 
-public enum RollType
+public enum StandardRollType
 {
     Basic,
     Auto,

@@ -1,50 +1,31 @@
-namespace Neotech.Models;
+using NeotechCore.API.Exceptions;
+
+namespace NeotechCore.API.Models;
 
 public class DiceSet
 {
-    public Die[] Dice { get; }
+    public List<RolledDie> Dice { get; }
     public DiceType DiceType { get; }
-    public uint RollBonus { get; }
-    public uint Difficulty { get; }
+    public RollModifiers Modifiers { get; }
 
-    public DiceSet(uint numberOfDice, uint rollBonus = 0, uint difficulty = 20, DiceType diceType = DiceType.d10)
+    public DiceSet(DiceSet rolledDice, RollModifiers modifiers) : this(rolledDice.Dice) => Modifiers = modifiers;
+    public DiceSet(List<RolledDie> rolledDice, RollModifiers modifiers) : this(rolledDice) => Modifiers = modifiers;
+    public DiceSet(List<RolledDie> rolledDice)
     {
-        Dice = Enumerable.Range(1, (int)numberOfDice).Select(_ => new Die(diceType)).ToArray();
-        DiceType = diceType;
-        RollBonus = rollBonus;
-        Difficulty = difficulty;
+        var firstDie = rolledDice.FirstOrDefault();
+
+        if (firstDie is null) throw DiceSetException.EmptyList;
+        if (rolledDice.Exists(die => die.DiceType != firstDie.DiceType)) throw DiceSetException.MultipleDiceTypes;
+
+        Dice = rolledDice;
+        DiceType = firstDie.DiceType;
+        Modifiers = new RollModifiers();
     }
 
-    public DiceSet(Die[] existingDice, uint rollBonus = 0, uint difficulty = 20)
+    public static DiceSet operator +(DiceSet setOne, DiceSet setTwo)
     {
-        if (existingDice.Length == 0 || existingDice.All(value => value is null))
-        {
-            throw new ArgumentException("A DiceSet cannot be created with an empty array.");
-        }
-
-        var diceType = existingDice.First().DiceType;
-        if (existingDice.Where(die => die.DiceType != diceType).Any())
-        {
-            throw new ArgumentException("All dice in a DiceSet must have the same DiceType.");
-        }
-
-        RollBonus = rollBonus;
-        DiceType = diceType;
-        Dice = existingDice.Where(value => value is not null).ToArray();
-        Difficulty = difficulty;
-    }
-
-    public static DiceSet operator + (DiceSet setOne, DiceSet setTwo)
-    {
-        var rollBonus = setOne.RollBonus > 0 ? 
-                        setOne.RollBonus : 
-                        setTwo.RollBonus ;
-
-        var difficulty = setOne.Difficulty != 20 || setTwo.Difficulty != 20 ?
-                         Math.Max(setOne.Difficulty, setTwo.Difficulty) :
-                         20;
-
-        var dice = setOne.Dice.Concat(setTwo.Dice).ToArray();
-        return new DiceSet(dice, rollBonus, difficulty);
+        var modifiers = setOne.Modifiers + setTwo.Modifiers;
+        var dice = setOne.Dice.Concat(setTwo.Dice).ToList();
+        return new DiceSet(dice, modifiers);
     }
 }

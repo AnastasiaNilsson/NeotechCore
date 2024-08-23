@@ -1,4 +1,4 @@
-namespace Neotech.Models;
+namespace NeotechCore.API.Models;
 
 public enum DiceType
 {
