@@ -1,3 +1,5 @@
+using NeotechCore.API.Exceptions;
+
 namespace NeotechCore.Tests.UnitTests;
 
 public class RollTests
@@ -66,8 +68,16 @@ public class RollTests
     }
 
     [Fact]
-    public void StandardRoll_Test()
+    public void StandardRoll_ShouldThrow_IfParametersAreMismatched()
     {
+        // Arrange & Act
+        Action roll1 = () => Roll.StandardRoll(API.Models.StandardRollType.Basic, extraDice: 1);
+        Action roll2 = () => Roll.StandardRoll(API.Models.StandardRollType.Auto, extraDice: 0);
+        Action roll3 = () => Roll.StandardRoll(API.Models.StandardRollType.Flow, extraDice: 0);
 
+        // Assert
+        roll1.Should().Throw<RollException>().WithMessage("No extra dice are allowed for 'StandardRollType.Basic'.");
+        roll2.Should().Throw<RollException>().WithMessage("At least one extra die is required for 'StandardRollType.Auto'.");
+        roll3.Should().Throw<RollException>().WithMessage("At least one extra die is required for 'StandardRollType.Flow'.");
     }
 }

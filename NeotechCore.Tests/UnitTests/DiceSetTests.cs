@@ -51,7 +51,7 @@ public class DiceSetTests
         Action initialization = () => new DiceSet(nonExistingDice);
 
         // Assert
-        initialization.Should().Throw<DiceSetException>().WithMessage("A DiceSet cannot be created with an empty list.");
+        initialization.Should().Throw<RollException>().WithMessage("A DiceSet cannot be created with an empty list.");
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public class DiceSetTests
         Action initialization = () => new DiceSet(existingDice);
 
         // Assert
-        initialization.Should().Throw<DiceSetException>().WithMessage("All dice in a DiceSet must have the same DiceType.");
+        initialization.Should().Throw<RollException>().WithMessage("All dice in a DiceSet must have the same DiceType.");
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class DiceSetTests
         Action addition = () => { var newSet = diceSet1 + diceSet2; };
 
         // Assert
-        addition.Should().Throw<DiceSetException>().WithMessage("All dice in a DiceSet must have the same DiceType.");
+        addition.Should().Throw<RollException>().WithMessage("All dice in a DiceSet must have the same DiceType.");
     }
 
     [Fact]
@@ -122,7 +122,7 @@ public class DiceSetTests
         Action highestTwo = () => diceSet.HighestTwo();
 
         // Assert
-        highestTwo.Should().Throw<DiceSetException>().WithMessage("The HighestTwo() method requires a DiceSet with at least 2 dice.");
+        highestTwo.Should().Throw<RollException>().WithMessage("The HighestTwo() method requires a DiceSet with at least 2 dice.");
     }
 
     [Theory]

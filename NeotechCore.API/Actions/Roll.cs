@@ -1,3 +1,4 @@
+using NeotechCore.API.Exceptions;
 using NeotechCore.API.ExtensionMethods;
 using NeotechCore.API.Models;
 
@@ -44,11 +45,11 @@ public static class Roll
     {
         switch (rollType)
         {
-            case StandardRollType.Basic when extraDice is not 0:
-                throw new ArgumentException($"No extra dice are allowed for {rollType}.");
+            case StandardRollType.Basic when extraDice > 0:
+                throw RollException.NoExtraDiceAllowed(rollType);
 
-            case StandardRollType.Auto or StandardRollType.Flow when extraDice is 0:
-                throw new ArgumentException($"At least one extra die is required for {rollType}.");
+            case StandardRollType.Auto or StandardRollType.Flow when extraDice == 0:
+                throw RollException.ExtraDiceRequired(rollType);
         }
 
         var rolledDice = Roll.Dice(2 + extraDice, DiceType.d10)
