@@ -71,9 +71,9 @@ public class RollTests
     public void StandardRoll_ShouldThrow_IfParametersAreMismatched()
     {
         // Arrange & Act
-        Action roll1 = () => Roll.StandardRoll(API.Models.StandardRollType.Basic, extraDice: 1);
-        Action roll2 = () => Roll.StandardRoll(API.Models.StandardRollType.Auto, extraDice: 0);
-        Action roll3 = () => Roll.StandardRoll(API.Models.StandardRollType.Flow, extraDice: 0);
+        Action roll1 = () => Roll.StandardRoll(API.Models.RollType.Basic, extraDice: 1);
+        Action roll2 = () => Roll.StandardRoll(API.Models.RollType.Auto, extraDice: 0);
+        Action roll3 = () => Roll.StandardRoll(API.Models.RollType.Flow, extraDice: 0);
 
         // Assert
         roll1.Should().Throw<RollException>().WithMessage("No extra dice are allowed for 'StandardRollType.Basic'.");

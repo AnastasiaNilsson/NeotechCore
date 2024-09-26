@@ -38,24 +38,24 @@ public static class Roll
             }
             explosions.Add(explosion);
         }
-        return new DiceSet(explosions, diceSet.Modifiers);
+        return new DiceSet(explosions, diceSet.Options);
     }
 
-    public static DiceSet StandardRoll(StandardRollType rollType = StandardRollType.Basic, uint extraDice = 0, uint rollBonus = 0, uint difficulty = 20)
+    public static DiceSet StandardRoll(RollOptions options)
     {
-        switch (rollType)
+        switch (options.RollType)
         {
-            case StandardRollType.Basic when extraDice > 0:
-                throw RollException.NoExtraDiceAllowed(rollType);
+            case RollType.Basic when options.NumberOfDice > 2:
+                throw RollException.NoExtraDiceAllowed(options.RollType);
 
-            case StandardRollType.Auto or StandardRollType.Flow when extraDice == 0:
-                throw RollException.ExtraDiceRequired(rollType);
+            case RollType.Auto or RollType.Flow when options.NumberOfDice == 2:
+                throw RollException.ExtraDiceRequired(options.RollType);
         }
 
-        var rolledDice = Roll.Dice(2 + extraDice, DiceType.d10)
-                             .WithModifiers(rollBonus, difficulty);
+        var rolledDice = Roll.Dice(options.NumberOfDice, DiceType.d10)
+                             .WithRollOptions(options);
 
-        var baseDice = rollType == StandardRollType.Flow ?
+        var baseDice = options.RollType == RollType.Flow ?
                        rolledDice.BestToKeep() :
                        rolledDice.HighestTwo();
 

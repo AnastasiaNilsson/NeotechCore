@@ -15,8 +15,8 @@ public class DiceSetTests
         // Arrange
         var rolledDice1 = TestHelper.ManyDice(2, DiceType.d100);
         var rolledDice2 = TestHelper.ManyDice(5, DiceType.d10);
-        var modifiers1 = new RollModifiers(rollBonus: 10, difficulty: 15);
-        var modifiers2 = new RollModifiers(rollBonus: 5, difficulty: 25);
+        var modifiers1 = new RollAttributes(rollBonus: 10, difficulty: 15);
+        var modifiers2 = new RollAttributes(rollBonus: 5, difficulty: 25);
 
         // Act
         var diceSet1 = new DiceSet(rolledDice1);
@@ -32,13 +32,13 @@ public class DiceSetTests
         diceSet2.DiceType.Should().Be(DiceType.d10);
         diceSet3.DiceType.Should().Be(DiceType.d100);
 
-        diceSet1.Modifiers.RollBonus.Should().Be(0);
-        diceSet2.Modifiers.RollBonus.Should().Be(10);
-        diceSet3.Modifiers.RollBonus.Should().Be(5);
+        diceSet1.Options.RollBonus.Should().Be(0);
+        diceSet2.Options.RollBonus.Should().Be(10);
+        diceSet3.Options.RollBonus.Should().Be(5);
 
-        diceSet1.Modifiers.Difficulty.Should().Be(20);
-        diceSet2.Modifiers.Difficulty.Should().Be(15);
-        diceSet3.Modifiers.Difficulty.Should().Be(25);
+        diceSet1.Options.Difficulty.Should().Be(20);
+        diceSet2.Options.Difficulty.Should().Be(15);
+        diceSet3.Options.Difficulty.Should().Be(25);
     }
 
     [Fact]
@@ -91,20 +91,20 @@ public class DiceSetTests
     public void AddingDiceSets_ShouldCorrectlyHandle_RollModifiers()
     {
         // Arrange
-        var diceSet1 = new DiceSet(TestHelper.ManyDice(2), new RollModifiers(0, 25));
-        var diceSet2 = new DiceSet(TestHelper.ManyDice(2), new RollModifiers(5, 20));
-        var diceSet3 = new DiceSet(TestHelper.ManyDice(2), new RollModifiers(6, 20));
-        var diceSet4 = new DiceSet(TestHelper.ManyDice(2), new RollModifiers(7, 15));
+        var diceSet1 = new DiceSet(TestHelper.ManyDice(2), new RollAttributes(0, 25));
+        var diceSet2 = new DiceSet(TestHelper.ManyDice(2), new RollAttributes(5, 20));
+        var diceSet3 = new DiceSet(TestHelper.ManyDice(2), new RollAttributes(6, 20));
+        var diceSet4 = new DiceSet(TestHelper.ManyDice(2), new RollAttributes(7, 15));
 
         // Act
         var newSet1 = diceSet1 + diceSet2;
         var newSet2 = diceSet3 + diceSet4;
 
         // Assert
-        newSet1.Modifiers.RollBonus.Should().Be(5);
-        newSet1.Modifiers.Difficulty.Should().Be(25);
-        newSet2.Modifiers.RollBonus.Should().Be(6);
-        newSet2.Modifiers.Difficulty.Should().Be(15);
+        newSet1.Options.RollBonus.Should().Be(5);
+        newSet1.Options.Difficulty.Should().Be(25);
+        newSet2.Options.RollBonus.Should().Be(6);
+        newSet2.Options.Difficulty.Should().Be(15);
     }
 
 
