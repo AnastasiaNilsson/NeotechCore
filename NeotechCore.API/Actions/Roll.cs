@@ -1,5 +1,5 @@
 using NeotechCore.API.Exceptions;
-using NeotechCore.API.ExtensionMethods;
+using NeotechCore.API.ModelExtensions;
 using NeotechCore.API.Models;
 
 namespace NeotechCore.API.Actions;
@@ -16,17 +16,17 @@ public static class Roll
 
     public static RolledDice Dice(uint numberOfDice, DiceType diceType)
     {
-        var rolledDice = new List<SingleRolledDie>();
-        foreach (var i in Enumerable.Range(1, (int)numberOfDice))
+        var diceList = new List<SingleRolledDie>();
+        foreach (var _ in Enumerable.Range(1, (int)numberOfDice))
         {
-            rolledDice.Add(SingleDie(diceType));
+            diceList.Add(SingleDie(diceType));
         }
-        return new RolledDice(rolledDice);
+        return new RolledDice(diceList);
     }
 
-    public static RolledDice Explosion(RolledDice diceSet, bool doubleChance = false)
+    public static RolledDice Explosion(RolledDice rolledDice, bool doubleChance = false)
     {
-        var explosionCount = diceSet.Dice.Where(die => die.Result == 10 || (doubleChance && die.Result == 9)).Count();
+        var explosionCount = rolledDice.DiceList.Where(die => die.Result == 10 || (doubleChance && die.Result == 9)).Count();
         var explosions = new List<SingleRolledDie>();
 
         for (var iteration = 1; iteration <= explosionCount; iteration++)
@@ -38,7 +38,7 @@ public static class Roll
             }
             explosions.Add(explosion);
         }
-        return new RolledDice(explosions, diceSet.Options);
+        return new RolledDice(explosions);
     }
 
     public static RolledDice StandardRoll(RollOptions options)
