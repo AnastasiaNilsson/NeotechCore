@@ -30,7 +30,7 @@ public class RollTests
 
     [Theory]
     [MemberData(nameof(ExplosionTheory))]
-    public void Explosion_ShouldAdd_CorrectNumberOfDice(DiceSet diceSet, bool doubleChanceStatus)
+    public void Explosion_ShouldAdd_CorrectNumberOfDice(RolledDice diceSet, bool doubleChanceStatus)
     {
         // Arrange
         var originalDiceCount = diceSet.Dice.Count;
@@ -50,10 +50,10 @@ public class RollTests
     }
     public static List<object[]> ExplosionTheory()
     {
-        var diceSet1 = new DiceSet(TestHelper.FakeDice([10]));
-        var diceSet2 = new DiceSet(TestHelper.FakeDice([10, 1, 3, 8]));
-        var diceSet3 = new DiceSet(TestHelper.FakeDice([1, 9, 9, 2]));
-        var diceSet4 = new DiceSet(TestHelper.FakeDice([1, 10, 4, 10, 1]));
+        var diceSet1 = new RolledDice(TestHelper.FakeDice([10]));
+        var diceSet2 = new RolledDice(TestHelper.FakeDice([10, 1, 3, 8]));
+        var diceSet3 = new RolledDice(TestHelper.FakeDice([1, 9, 9, 2]));
+        var diceSet4 = new RolledDice(TestHelper.FakeDice([1, 10, 4, 10, 1]));
 
         bool doubleChance = true;
         bool noDoubleChance = false;

@@ -8,26 +8,26 @@ public static class Roll
 {
     private static Random _random = new Random();
 
-    public static RolledDie SingleDie(DiceType diceType)
+    public static SingleRolledDie SingleDie(DiceType diceType)
     {
         var result = _random.Next(1, (int)diceType + 1);
-        return new RolledDie(diceType, result);
+        return new SingleRolledDie(diceType, result);
     }
 
-    public static DiceSet Dice(uint numberOfDice, DiceType diceType)
+    public static RolledDice Dice(uint numberOfDice, DiceType diceType)
     {
-        var rolledDice = new List<RolledDie>();
+        var rolledDice = new List<SingleRolledDie>();
         foreach (var i in Enumerable.Range(1, (int)numberOfDice))
         {
             rolledDice.Add(SingleDie(diceType));
         }
-        return new DiceSet(rolledDice);
+        return new RolledDice(rolledDice);
     }
 
-    public static DiceSet Explosion(DiceSet diceSet, bool doubleChance = false)
+    public static RolledDice Explosion(RolledDice diceSet, bool doubleChance = false)
     {
         var explosionCount = diceSet.Dice.Where(die => die.Result == 10 || (doubleChance && die.Result == 9)).Count();
-        var explosions = new List<RolledDie>();
+        var explosions = new List<SingleRolledDie>();
 
         for (var iteration = 1; iteration <= explosionCount; iteration++)
         {
@@ -38,10 +38,10 @@ public static class Roll
             }
             explosions.Add(explosion);
         }
-        return new DiceSet(explosions, diceSet.Options);
+        return new RolledDice(explosions, diceSet.Options);
     }
 
-    public static DiceSet StandardRoll(RollOptions options)
+    public static RolledDice StandardRoll(RollOptions options)
     {
         switch (options.RollType)
         {
