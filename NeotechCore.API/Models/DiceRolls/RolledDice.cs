@@ -14,8 +14,8 @@ public class RolledDice
     {
         var firstDie = diceList.FirstOrDefault();
 
-        if (firstDie is null) throw DiceSetException.EmptyList;
-        if (diceList.Exists(die => die.DiceType != firstDie.DiceType)) throw DiceSetException.MultipleDiceTypes;
+        if (firstDie is null) throw RolledDiceException.EmptyList;
+        if (diceList.Exists(die => die.DiceType != firstDie.DiceType)) throw RolledDiceException.MultipleDiceTypes;
 
         DiceList = diceList;
         Options = new RollOptions();

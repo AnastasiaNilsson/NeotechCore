@@ -12,7 +12,7 @@ public static class DiceSetExtension
 
     public static RolledDice HighestTwo(this RolledDice diceSet)
     {
-        if (diceSet.Dice.Count < 2) throw DiceSetException.HighestTwoRequiresTwo;
+        if (diceSet.Dice.Count < 2) throw RolledDiceException.HighestTwoRequiresTwo;
 
         var highestTwo = diceSet.Dice.OrderByDescending(die => die.Result).Take(2).ToList();
         return new RolledDice(highestTwo, diceSet.Options);
