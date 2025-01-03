@@ -18,12 +18,12 @@ public class RolledDice
         DiceList = diceList;
         Options = new RollOptions();
     }
-    public RolledDice(List<RolledSingleDie> diceList, RollOptions modifiers) : this(diceList) => Options = modifiers;
+    public RolledDice(List<RolledSingleDie> diceList, RollOptions options) : this(diceList) => Options = options;
 
     public static RolledDice operator +(RolledDice setOne, RolledDice setTwo)
     {
-        var modifiers = setOne.Options;
+        var options = setOne.Options;
         var dice = setOne.DiceList.Concat(setTwo.DiceList).ToList();
-        return new RolledDice(dice, modifiers);
+        return new RolledDice(dice, options);
     }
 }

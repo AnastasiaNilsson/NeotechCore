@@ -1,5 +1,3 @@
-using NeotechCore.API.Exceptions;
-using NeotechCore.API.ModelExtensions;
 
 namespace NeotechCore.Tests.UnitTests;
 
@@ -52,7 +50,7 @@ public class RolledDiceTests
         Action initialization = () => new RolledDice(nonExistingDice);
 
         // Assert
-        initialization.Should().Throw<RollException>().WithMessage("RolledDice cannot be initiated with an empty DiceList.");
+        initialization.Should().Throw<RolledDiceException>().WithMessage("RolledDice cannot be initiated with an empty DiceList.");
     }
 
     [Fact]
@@ -69,7 +67,7 @@ public class RolledDiceTests
         Action initialization = () => new RolledDice(existingDice);
 
         // Assert
-        initialization.Should().Throw<RollException>().WithMessage("All dice in the DiceList must have the same DiceType.");
+        initialization.Should().Throw<RolledDiceException>().WithMessage("All dice in the DiceList must have the same DiceType.");
     }
 
     [Fact]
@@ -85,7 +83,7 @@ public class RolledDiceTests
         Action addition = () => { var newSet = rolledDice1 + rolledDice2; };
 
         // Assert
-        addition.Should().Throw<RollException>().WithMessage("All dice in the DiceList must have the same DiceType.");
+        addition.Should().Throw<RolledDiceException>().WithMessage("All dice in the DiceList must have the same DiceType.");
     }
 
     [Fact]
@@ -93,18 +91,16 @@ public class RolledDiceTests
     {
         // Arrange
         var rolledDice1 = new RolledDice(TestHelper.ManyDice(2), new RollOptions() { EdgeBonus = 0, Difficulty = 25 });
-        var rolledDice2 = new RolledDice(TestHelper.ManyDice(2), new RollOptions() { EdgeBonus = 5, Difficulty = 20 });
-        var rolledDice3 = new RolledDice(TestHelper.ManyDice(2), new RollOptions() { EdgeBonus = 6, Difficulty = 20 });
-        var rolledDice4 = new RolledDice(TestHelper.ManyDice(2), new RollOptions() { EdgeBonus = 7, Difficulty = 15 });
+        var rolledDice2 = new RolledDice(TestHelper.ManyDice(2), new RollOptions() { EdgeBonus = 5, Difficulty = 15 });
 
         // Act
         var newDice1 = rolledDice1 + rolledDice2;
-        var newDice2 = rolledDice3 + rolledDice4;
+        var newDice2 = rolledDice2 + rolledDice1;
 
         // Assert
-        newDice1.Options.EdgeBonus.Should().Be(5);
+        newDice1.Options.EdgeBonus.Should().Be(0);
         newDice1.Options.Difficulty.Should().Be(25);
-        newDice2.Options.EdgeBonus.Should().Be(6);
+        newDice2.Options.EdgeBonus.Should().Be(5);
         newDice2.Options.Difficulty.Should().Be(15);
     }
 
@@ -123,7 +119,7 @@ public class RolledDiceTests
         Action highestTwo = () => rolledDice.HighestTwo();
 
         // Assert
-        highestTwo.Should().Throw<RollException>().WithMessage("The HighestTwo() method requires a DiceList with at least 2 dice.");
+        highestTwo.Should().Throw<RolledDiceException>().WithMessage("The HighestTwo() method requires a DiceList with at least 2 dice.");
     }
 
     [Theory]

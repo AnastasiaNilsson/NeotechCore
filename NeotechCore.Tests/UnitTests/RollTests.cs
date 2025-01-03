@@ -1,4 +1,3 @@
-using NeotechCore.API.Exceptions;
 
 namespace NeotechCore.Tests.UnitTests;
 
@@ -6,7 +5,7 @@ public class RollTests
 {
 
     [Fact]
-    public void SingleDie_DiceType_ShouldMatch_ParameterDiceType()
+    public void RolledSingleDie_DiceType_ShouldMatch_ParameterDiceType()
     {
         // Arrange & Act
         var die = Roll.SingleDie(DiceType.d100);
@@ -16,7 +15,7 @@ public class RollTests
     }
 
     [Fact]
-    public void SingleDie_Result_ShouldBeWithin_DiceTypeMaxValue()
+    public void RolledSingleDie_Result_ShouldBeWithin_DiceTypeMaxValue()
     {
         // Arrange & Act
         var diceArray = TestHelper.ManyDice(1000, DiceType.d10);
@@ -30,40 +29,40 @@ public class RollTests
 
     [Theory]
     [MemberData(nameof(ExplosionTheory))]
-    public void Explosion_ShouldAdd_CorrectNumberOfDice(RolledDice diceSet, bool doubleChanceStatus)
+    public void Explosion_ShouldAdd_CorrectNumberOfDice(RolledDice rolledDice, bool doubleChanceStatus)
     {
         // Arrange
-        var originalDiceCount = diceSet.Dice.Count;
+        var originalDiceCount = rolledDice.DiceList.Count;
 
         // Act
-        diceSet += Roll.Explosion(diceSet, doubleChanceStatus);
+        rolledDice += Roll.Explosion(rolledDice, doubleChanceStatus);
 
         var explosions = doubleChanceStatus ?
-                         diceSet.Dice.Where(die => die.Result >= 9).ToArray() :
-                         diceSet.Dice.Where(die => die.Result == 10).ToArray();
+                         rolledDice.DiceList.Where(die => die.Result >= 9).ToArray() :
+                         rolledDice.DiceList.Where(die => die.Result == 10).ToArray();
 
         var explosionCount = explosions.Length;
-        var totalDiceCount = diceSet.Dice.Count;
+        var totalDiceCount = rolledDice.DiceList.Count;
 
         // Assert
         totalDiceCount.Should().Be(originalDiceCount + explosionCount);
     }
     public static List<object[]> ExplosionTheory()
     {
-        var diceSet1 = new RolledDice(TestHelper.FakeDice([10]));
-        var diceSet2 = new RolledDice(TestHelper.FakeDice([10, 1, 3, 8]));
-        var diceSet3 = new RolledDice(TestHelper.FakeDice([1, 9, 9, 2]));
-        var diceSet4 = new RolledDice(TestHelper.FakeDice([1, 10, 4, 10, 1]));
+        var rolledDice1 = new RolledDice(TestHelper.FakeDice([10]));
+        var rolledDice2 = new RolledDice(TestHelper.FakeDice([10, 1, 3, 8]));
+        var rolledDice3 = new RolledDice(TestHelper.FakeDice([1, 9, 9, 2]));
+        var rolledDice4 = new RolledDice(TestHelper.FakeDice([1, 10, 4, 10, 1]));
 
         bool doubleChance = true;
         bool noDoubleChance = false;
 
         return new List<object[]>()
         {
-            {[diceSet1, noDoubleChance]},
-            {[diceSet2, noDoubleChance]},
-            {[diceSet3, doubleChance]},
-            {[diceSet4, noDoubleChance]}
+            {[rolledDice1, noDoubleChance]},
+            {[rolledDice2, noDoubleChance]},
+            {[rolledDice3, doubleChance]},
+            {[rolledDice4, noDoubleChance]}
         };
     }
 
@@ -71,13 +70,18 @@ public class RollTests
     public void StandardRoll_ShouldThrow_IfParametersAreMismatched()
     {
         // Arrange & Act
-        Action roll1 = () => Roll.StandardRoll(API.Models.RollType.Basic, extraDice: 1);
-        Action roll2 = () => Roll.StandardRoll(API.Models.RollType.Auto, extraDice: 0);
-        Action roll3 = () => Roll.StandardRoll(API.Models.RollType.Flow, extraDice: 0);
+        var rollOptions1 = new RollOptions() { RollType = RollType.Basic, NumberOfDice = 3 };
+        var rollOptions2 = new RollOptions() { RollType = RollType.Auto, NumberOfDice = 2 };
+        var rollOptions3 = new RollOptions() { RollType = RollType.Flow, NumberOfDice = 2 };
+
+        // Act
+        Action roll1 = () => Roll.StandardRoll(rollOptions1);
+        Action roll2 = () => Roll.StandardRoll(rollOptions2);
+        Action roll3 = () => Roll.StandardRoll(rollOptions3);
 
         // Assert
-        roll1.Should().Throw<RollException>().WithMessage("No extra dice are allowed for 'StandardRollType.Basic'.");
-        roll2.Should().Throw<RollException>().WithMessage("At least one extra die is required for 'StandardRollType.Auto'.");
-        roll3.Should().Throw<RollException>().WithMessage("At least one extra die is required for 'StandardRollType.Flow'.");
+        roll1.Should().Throw<RollException>().WithMessage("No extra dice are allowed for RollType Basic.");
+        roll2.Should().Throw<RollException>().WithMessage("At least one extra die is required for RollType Auto.");
+        roll3.Should().Throw<RollException>().WithMessage("At least one extra die is required for RollType Flow.");
     }
 }
