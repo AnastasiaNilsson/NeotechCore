@@ -8,15 +8,15 @@ public static class Roll
 {
     private static Random _random = new Random();
 
-    public static SingleRolledDie SingleDie(DiceType diceType)
+    public static RolledSingleDie SingleDie(DiceType diceType)
     {
         var result = _random.Next(1, (int)diceType + 1);
-        return new SingleRolledDie(diceType, result);
+        return new RolledSingleDie(diceType, result);
     }
 
     public static RolledDice Dice(uint numberOfDice, DiceType diceType)
     {
-        var diceList = new List<SingleRolledDie>();
+        var diceList = new List<RolledSingleDie>();
         foreach (var _ in Enumerable.Range(1, (int)numberOfDice))
         {
             diceList.Add(SingleDie(diceType));
@@ -27,7 +27,7 @@ public static class Roll
     public static RolledDice Explosion(RolledDice rolledDice, bool doubleChance = false)
     {
         var explosionCount = rolledDice.DiceList.Where(die => die.Result == 10 || (doubleChance && die.Result == 9)).Count();
-        var explosions = new List<SingleRolledDie>();
+        var explosions = new List<RolledSingleDie>();
 
         for (var iteration = 1; iteration <= explosionCount; iteration++)
         {

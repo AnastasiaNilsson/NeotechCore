@@ -2,19 +2,19 @@ namespace NeotechCore.Tests.UnitTests;
 
 public static class TestHelper
 {
-    public static List<SingleRolledDie> ManyDice(int numberOfDice, DiceType diceType = DiceType.d10)
+    public static List<RolledSingleDie> ManyDice(int numberOfDice, DiceType diceType = DiceType.d10)
     {
-        var diceArray = new SingleRolledDie[numberOfDice];
+        var diceArray = new RolledSingleDie[numberOfDice];
         return diceArray.Select(die => Roll.SingleDie(diceType)).ToList();
     }
 
-    public static List<SingleRolledDie> FakeDice(int[] results, DiceType diceType = DiceType.d10)
+    public static List<RolledSingleDie> FakeDice(int[] results, DiceType diceType = DiceType.d10)
     {
-        var diceCollection = new List<SingleRolledDie>();
+        var diceCollection = new List<RolledSingleDie>();
 
         foreach (var result in results)
         {
-            var fake = Mock.Of<SingleRolledDie>(die => die.Result == result && die.DiceType == diceType);
+            var fake = Mock.Of<RolledSingleDie>(die => die.Result == result && die.DiceType == diceType);
             diceCollection.Add(fake);
         }
 

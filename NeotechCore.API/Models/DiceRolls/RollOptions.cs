@@ -2,33 +2,23 @@ using System.Text.Json.Serialization;
 
 namespace NeotechCore.API.Models;
 
-public class RollOptions
+public class RollOptions()
 {
     [JsonPropertyName("roll_type")]
-    public RollType RollType { get; }
+    public RollType RollType { get; init; } = RollType.Basic;
 
     [JsonPropertyName("number_of_dice")]
-    public uint NumberOfDice { get; }
+    public uint NumberOfDice { get; init; } = 0;
 
     [JsonPropertyName("attribute_score")]
-    public uint AttributeScore { get; }
+    public uint AttributeScore { get; init; } = 0;
 
     [JsonPropertyName("edge_bonus")]
-    public uint EdgeBonus { get; }
+    public uint EdgeBonus { get; init; } = 0;
 
     [JsonPropertyName("difficulty")]
-    public uint Difficulty { get; }
+    public uint Difficulty { get; init; } = 20;
 
     [JsonPropertyName("joss")]
-    public bool Joss { get; }
-
-    public RollOptions()
-    {
-        RollType = RollType.Basic;
-        NumberOfDice = 0;
-        AttributeScore = 0;
-        EdgeBonus = 0;
-        Difficulty = 20;
-        Joss = false;
-    }
+    public bool Joss { get; init; } = false;
 }

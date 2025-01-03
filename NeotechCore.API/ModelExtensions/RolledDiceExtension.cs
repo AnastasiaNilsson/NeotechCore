@@ -7,7 +7,7 @@ public static class RolledDiceExtension
 {
     public static RolledDice WithRollOptions(this RolledDice rolledDice, RollOptions rollOptions)
     {
-        return new RolledDice(rolledDice, rollOptions);
+        return new RolledDice(rolledDice.DiceList, rollOptions);
     }
 
     public static RolledDice HighestTwo(this RolledDice rolledDice)
