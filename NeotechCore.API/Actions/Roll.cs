@@ -14,6 +14,11 @@ public static class Roll
         return new RolledSingleDie(diceType, result);
     }
 
+    public static List<RolledSingleDie> MultipleDice(int numberOfDice, DiceType diceType = DiceType.d10)
+    {
+        return Enumerable.Range(1, numberOfDice).Select(die => SingleDie(diceType)).ToList();
+    }
+
     public static RolledDice Dice(uint numberOfDice, DiceType diceType)
     {
         var diceList = new List<RolledSingleDie>();

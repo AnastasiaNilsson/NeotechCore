@@ -18,7 +18,7 @@ public class RollTests
     public void RolledSingleDie_Result_ShouldBeWithin_DiceTypeMaxValue()
     {
         // Arrange & Act
-        var diceArray = TestHelper.ManyDice(1000, DiceType.d10);
+        var diceArray = Roll.MultipleDice(1000, DiceType.d10);
 
         // Assert
         foreach (var die in diceArray)

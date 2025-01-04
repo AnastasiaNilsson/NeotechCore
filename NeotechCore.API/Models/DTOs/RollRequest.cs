@@ -3,7 +3,7 @@ using NeotechCore.API.Models;
 
 namespace NeotechCore.API.Models;
 
-public class DiceRequest()
+public class RollRequest()
 {
     required public RollOptions Options { get; init; }
     required public string RequestedByClient { get; init; }
