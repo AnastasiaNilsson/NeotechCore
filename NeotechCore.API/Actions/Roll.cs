@@ -66,7 +66,7 @@ public static class Roll
             DiceResult = diceResult,
             AttributeScore = (int)options.AttributeScore,
             EdgeBonus = (int)options.EdgeBonus,
-            Total = totalResult,
+            TotalResult = totalResult,
             Difficulty = difficulty,
             Result = result
         };

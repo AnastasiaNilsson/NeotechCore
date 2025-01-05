@@ -1,4 +1,3 @@
-using System.IO.Compression;
 using Microsoft.AspNetCore.Mvc;
 using NeotechCore.API.Actions;
 using NeotechCore.API.Models;

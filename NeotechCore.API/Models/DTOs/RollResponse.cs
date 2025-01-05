@@ -4,7 +4,7 @@ namespace NeotechCore.API.Models;
 
 public class RollResponse()
 {
-    [JsonPropertyName("roll_results")]
+    [JsonPropertyName("results")]
     required public StandardRollResult StandardRollResults { get; init; }
 
     [JsonPropertyName("requested_options")]

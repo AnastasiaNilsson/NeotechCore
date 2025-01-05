@@ -101,7 +101,7 @@ public class RollTests
         roll.EdgeBonus.Should().Be((int)rollOptions.EdgeBonus);
         roll.Difficulty.Should().Be((int)rollOptions.Difficulty);
         roll.AttributeScore.Should().Be((int)rollOptions.AttributeScore);
-        roll.Total.Should().Be(roll.BaseDice.Aggregate(0, (total, die) => total += die.Result) + roll.ExplosionDice.Aggregate(0, (total, die) => total += die.Result) + roll.AttributeScore + roll.EdgeBonus);
+        roll.TotalResult.Should().Be(roll.BaseDice.Aggregate(0, (total, die) => total += die.Result) + roll.ExplosionDice.Aggregate(0, (total, die) => total += die.Result) + roll.AttributeScore + roll.EdgeBonus);
 
         if (roll.ExplosionDice.Any())
         {
@@ -112,19 +112,19 @@ public class RollTests
         {
             case ResultType.InTheZone:
                 roll.BaseDice[0].Result.Should().Be(roll.BaseDice[1].Result);
-                roll.Total.Should().BeGreaterThanOrEqualTo(roll.Difficulty);
+                roll.TotalResult.Should().BeGreaterThanOrEqualTo(roll.Difficulty);
                 break;
             case ResultType.Fuckup:
                 roll.BaseDice[0].Result.Should().Be(roll.BaseDice[1].Result);
-                roll.Total.Should().BeLessThan(roll.Difficulty);
+                roll.TotalResult.Should().BeLessThan(roll.Difficulty);
                 break;
             case ResultType.Failure:
                 roll.BaseDice[0].Result.Should().NotBe(roll.BaseDice[1].Result);
-                roll.Total.Should().BeLessThan(roll.Difficulty);
+                roll.TotalResult.Should().BeLessThan(roll.Difficulty);
                 break;
             case ResultType.Success:
                 roll.BaseDice[0].Result.Should().NotBe(roll.BaseDice[1].Result);
-                roll.Total.Should().BeGreaterThanOrEqualTo(roll.Difficulty);
+                roll.TotalResult.Should().BeGreaterThanOrEqualTo(roll.Difficulty);
                 break;
         }
 
