@@ -37,6 +37,7 @@ public static class RolledDiceExtension
         return rolledDice.HighestTwo();
     }
 
+    // Note to self: the explosions seem broken
     public static List<RolledSingleDie> Explosions(this RolledDice rolledDice, bool doubleChance = false)
     {
         var explosionCount = rolledDice.DiceList.Where(die => die.Result == 10 || (doubleChance && die.Result == 9)).Count();

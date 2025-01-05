@@ -61,8 +61,8 @@ public static class Roll
 
         return new StandardRollResult()
         {
-            BaseDice = baseDice.DiceList,
-            ExplosionDice = explosions,
+            BaseDice = baseDice.DiceList.Select(die => die.Result).ToList(),
+            ExplosionDice = explosions.Select(die => die.Result).ToList(),
             DiceResult = diceResult,
             AttributeScore = (int)options.AttributeScore,
             EdgeBonus = (int)options.EdgeBonus,

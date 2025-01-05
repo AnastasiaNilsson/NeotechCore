@@ -8,13 +8,10 @@ public class RollResponse()
     required public StandardRollResult StandardRollResults { get; init; }
 
     [JsonPropertyName("requested_options")]
-    required public RollOptions Options { get; init; }
+    required public RollOptions RequestedOptions { get; init; }
 
-    [JsonPropertyName("requested_by_client")]
-    required public string RequestedByClient { get; init; }
-    
     [JsonPropertyName("request_received")]
-    public DateTime RequestReceived { get; init; }
+    required public DateTime RequestedAt { get; init; }
 
     [JsonPropertyName("response_sent")]
     public DateTime ResponseSent { get; } = DateTime.Now;
