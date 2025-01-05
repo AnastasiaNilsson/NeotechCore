@@ -7,8 +7,8 @@ public class RollOptions()
     [JsonPropertyName("roll_type")]
     public RollType RollType { get; init; } = RollType.Basic;
 
-    [JsonPropertyName("number_of_dice")]
-    public uint NumberOfDice { get; init; } = 0;
+    [JsonPropertyName("extra_dice")]
+    public uint ExtraDice { get; init; } = 0;
 
     [JsonPropertyName("attribute_score")]
     public uint AttributeScore { get; init; } = 0;

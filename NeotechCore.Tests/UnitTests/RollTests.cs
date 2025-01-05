@@ -1,4 +1,7 @@
 
+using System.IO.Compression;
+using System.Security.Cryptography.X509Certificates;
+
 namespace NeotechCore.Tests.UnitTests;
 
 public class RollTests
@@ -35,11 +38,12 @@ public class RollTests
         var originalDiceCount = rolledDice.DiceList.Count;
 
         // Act
-        rolledDice += Roll.Explosion(rolledDice, doubleChanceStatus);
+        var newDiceList = rolledDice.DiceList;
+        newDiceList.AddRange(rolledDice.Explosions(doubleChanceStatus));
 
         var explosions = doubleChanceStatus ?
-                         rolledDice.DiceList.Where(die => die.Result >= 9).ToArray() :
-                         rolledDice.DiceList.Where(die => die.Result == 10).ToArray();
+                         newDiceList.Where(die => die.Result >= 9).ToArray() :
+                         newDiceList.Where(die => die.Result == 10).ToArray();
 
         var explosionCount = explosions.Length;
         var totalDiceCount = rolledDice.DiceList.Count;
@@ -70,9 +74,9 @@ public class RollTests
     public void StandardRoll_ShouldThrow_IfParametersAreMismatched()
     {
         // Arrange & Act
-        var rollOptions1 = new RollOptions() { RollType = RollType.Basic, NumberOfDice = 3 };
-        var rollOptions2 = new RollOptions() { RollType = RollType.Auto, NumberOfDice = 2 };
-        var rollOptions3 = new RollOptions() { RollType = RollType.Flow, NumberOfDice = 2 };
+        var rollOptions1 = new RollOptions() { RollType = RollType.Basic, ExtraDice = 1 };
+        var rollOptions2 = new RollOptions() { RollType = RollType.Auto, ExtraDice = 0 };
+        var rollOptions3 = new RollOptions() { RollType = RollType.Flow, ExtraDice = 0 };
 
         // Act
         Action roll1 = () => Roll.StandardRoll(rollOptions1);
@@ -84,4 +88,46 @@ public class RollTests
         roll2.Should().Throw<RollException>().WithMessage("At least one extra die is required for RollType Auto.");
         roll3.Should().Throw<RollException>().WithMessage("At least one extra die is required for RollType Flow.");
     }
+
+    [Theory]
+    [MemberData(nameof(StandardRollTheory))]
+    public void StandardRoll_ShouldReturn_CorrectStandardRollResults(RollOptions rollOptions)
+    {
+        // Arrange & Act
+        var roll = Roll.StandardRoll(rollOptions);
+
+        // Assert
+        roll.BaseDice.Count().Should().Be(2);
+        roll.EdgeBonus.Should().Be((int)rollOptions.EdgeBonus);
+        roll.Difficulty.Should().Be((int)rollOptions.Difficulty);
+        roll.AttributeScore.Should().Be((int)rollOptions.AttributeScore);
+        roll.Total.Should().Be(roll.BaseDice.Aggregate(0, (total, die) => total += die.Result) + roll.ExplosionDice.Aggregate(0, (total, die) => total += die.Result) + roll.AttributeScore + roll.EdgeBonus);
+
+        if (roll.ExplosionDice.Any())
+        {
+            roll.BaseDice.Should().Contain(die => die.Result == 10 || (die.Result == 9 && rollOptions.Joss == true));
+        }
+
+        switch (roll.Result)
+        {
+            case ResultType.InTheZone:
+                roll.BaseDice[0].Result.Should().Be(roll.BaseDice[1].Result);
+                roll.Total.Should().BeGreaterThanOrEqualTo(roll.Difficulty);
+                break;
+            case ResultType.Fuckup:
+                roll.BaseDice[0].Result.Should().Be(roll.BaseDice[1].Result);
+                roll.Total.Should().BeLessThan(roll.Difficulty);
+                break;
+            case ResultType.Failure:
+                roll.BaseDice[0].Result.Should().NotBe(roll.BaseDice[1].Result);
+                roll.Total.Should().BeLessThan(roll.Difficulty);
+                break;
+            case ResultType.Success:
+                roll.BaseDice[0].Result.Should().NotBe(roll.BaseDice[1].Result);
+                roll.Total.Should().BeGreaterThanOrEqualTo(roll.Difficulty);
+                break;
+        }
+
+    }
+    public static List<object[]> StandardRollTheory() => TestHelper.GenerateManyRollOptions(1000);
 }

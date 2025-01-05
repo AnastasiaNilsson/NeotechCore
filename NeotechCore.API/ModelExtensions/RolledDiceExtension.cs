@@ -1,5 +1,6 @@
 using NeotechCore.API.Models;
 using NeotechCore.API.Exceptions;
+using NeotechCore.API.Actions;
 
 namespace NeotechCore.API.ModelExtensions;
 
@@ -34,5 +35,22 @@ public static class RolledDiceExtension
     {
         // Full implementation coming soon
         return rolledDice.HighestTwo();
+    }
+
+    public static List<RolledSingleDie> Explosions(this RolledDice rolledDice, bool doubleChance = false)
+    {
+        var explosionCount = rolledDice.DiceList.Where(die => die.Result == 10 || (doubleChance && die.Result == 9)).Count();
+        var explosions = new List<RolledSingleDie>();
+
+        for (var iteration = 1; iteration <= explosionCount; iteration++)
+        {
+            var explosion = Roll.SingleDie(DiceType.d10);
+            if (explosion.Result == 10 || (doubleChance && explosion.Result == 9))
+            {
+                explosionCount++;
+            }
+            explosions.Add(explosion);
+        }
+        return explosions;
     }
 }

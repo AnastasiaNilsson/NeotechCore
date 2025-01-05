@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using NeotechCore.API.Exceptions;
 using NeotechCore.API.ModelExtensions;
 using NeotechCore.API.Models;
@@ -29,41 +30,53 @@ public static class Roll
         return new RolledDice(diceList);
     }
 
-    public static RolledDice Explosion(RolledDice rolledDice, bool doubleChance = false)
-    {
-        var explosionCount = rolledDice.DiceList.Where(die => die.Result == 10 || (doubleChance && die.Result == 9)).Count();
-        var explosions = new List<RolledSingleDie>();
-
-        for (var iteration = 1; iteration <= explosionCount; iteration++)
-        {
-            var explosion = Roll.SingleDie(DiceType.d10);
-            if (explosion.Result == 10 || (doubleChance && explosion.Result == 9))
-            {
-                explosionCount++;
-            }
-            explosions.Add(explosion);
-        }
-        return new RolledDice(explosions);
-    }
-
-    public static RolledDice StandardRoll(RollOptions options)
+    public static StandardRollResult StandardRoll(RollOptions options)
     {
         switch (options.RollType)
         {
-            case RollType.Basic when options.NumberOfDice > 2:
+            case RollType.Basic when options.ExtraDice > 0:
                 throw RollException.NoExtraDiceAllowed(options.RollType);
 
-            case RollType.Auto or RollType.Flow when options.NumberOfDice == 2:
+            case RollType.Auto or RollType.Flow when options.ExtraDice <= 0:
                 throw RollException.ExtraDiceRequired(options.RollType);
         }
 
-        var rolledDice = Roll.Dice(options.NumberOfDice, DiceType.d10)
+        var rolledDice = Roll.Dice(2 + options.ExtraDice, DiceType.d10)
                              .WithRollOptions(options);
 
         var baseDice = options.RollType == RollType.Flow ?
                        rolledDice.BestToKeep() :
                        rolledDice.HighestTwo();
 
-        return baseDice + Roll.Explosion(baseDice);
+        var explosions = rolledDice.Explosions(options.Joss);
+
+        var diceResult = baseDice.DiceList.Concat(explosions)
+                                          .Aggregate(0, (total, current) => total += current.Result);
+
+        var totalResult = diceResult + (int)options.AttributeScore + (int)options.EdgeBonus;
+        var baseDiceAreEqual = baseDice.DiceList[0].Result == baseDice.DiceList[1].Result;
+        var difficulty = (int)options.Difficulty;
+
+        var result = CalculateResult(baseDiceAreEqual, totalResult, difficulty);
+
+        return new StandardRollResult()
+        {
+            BaseDice = baseDice.DiceList,
+            ExplosionDice = explosions,
+            DiceResult = diceResult,
+            AttributeScore = (int)options.AttributeScore,
+            EdgeBonus = (int)options.EdgeBonus,
+            Total = totalResult,
+            Difficulty = difficulty,
+            Result = result
+        };
     }
+
+    private static ResultType CalculateResult(bool baseDiceAreEqual, int totalResult, int difficulty) => baseDiceAreEqual switch
+    {
+        true when totalResult >= difficulty => ResultType.InTheZone,
+        false when totalResult >= difficulty => ResultType.Success,
+        false when totalResult < difficulty => ResultType.Failure,
+        true when totalResult < difficulty => ResultType.Fuckup
+    };
 }
