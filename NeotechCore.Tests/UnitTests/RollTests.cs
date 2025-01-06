@@ -32,13 +32,13 @@ public class RollTests
 
     [Theory]
     [MemberData(nameof(ExplosionTheory))]
-    public void Explosion_ShouldAdd_CorrectNumberOfDice(RolledDice rolledDice, bool doubleChanceStatus)
+    public void Explosion_ShouldAdd_CorrectNumberOfDice(PreliminaryDiceRoll rolledDice, bool doubleChanceStatus)
     {
         // Arrange
-        var originalDiceCount = rolledDice.DiceList.Count;
+        var originalDiceCount = rolledDice.DicePool.Count;
 
         // Act
-        var newDiceList = rolledDice.DiceList;
+        var newDiceList = rolledDice.DicePool;
         newDiceList.AddRange(rolledDice.Explosions(doubleChanceStatus));
 
         var explosions = doubleChanceStatus ?
@@ -46,17 +46,17 @@ public class RollTests
                          newDiceList.Where(die => die.Result == 10).ToArray();
 
         var explosionCount = explosions.Length;
-        var totalDiceCount = rolledDice.DiceList.Count;
+        var totalDiceCount = rolledDice.DicePool.Count;
 
         // Assert
         totalDiceCount.Should().Be(originalDiceCount + explosionCount);
     }
     public static List<object[]> ExplosionTheory()
     {
-        var rolledDice1 = new RolledDice(TestHelper.FakeDice([10]));
-        var rolledDice2 = new RolledDice(TestHelper.FakeDice([10, 1, 3, 8]));
-        var rolledDice3 = new RolledDice(TestHelper.FakeDice([1, 9, 9, 2]));
-        var rolledDice4 = new RolledDice(TestHelper.FakeDice([1, 10, 4, 10, 1]));
+        var rolledDice1 = new StandardRoll(TestHelper.FakeDice([10]));
+        var rolledDice2 = new StandardRoll(TestHelper.FakeDice([10, 1, 3, 8]));
+        var rolledDice3 = new StandardRoll(TestHelper.FakeDice([1, 9, 9, 2]));
+        var rolledDice4 = new StandardRoll(TestHelper.FakeDice([1, 10, 4, 10, 1]));
 
         bool doubleChance = true;
         bool noDoubleChance = false;

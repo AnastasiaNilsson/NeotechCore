@@ -20,14 +20,14 @@ public static class Roll
         return Enumerable.Range(1, numberOfDice).Select(die => SingleDie(diceType)).ToList();
     }
 
-    public static RolledDice Dice(uint numberOfDice, DiceType diceType)
+    public static StandardRoll Dice(uint numberOfDice, DiceType diceType)
     {
         var diceList = new List<RolledSingleDie>();
         foreach (var _ in Enumerable.Range(1, (int)numberOfDice))
         {
             diceList.Add(SingleDie(diceType));
         }
-        return new RolledDice(diceList);
+        return new StandardRoll(diceList);
     }
 
     public static StandardRollResult StandardRoll(RollOptions options)
@@ -42,7 +42,7 @@ public static class Roll
         }
 
         var rolledDice = Roll.Dice(2 + options.ExtraDice, DiceType.d10)
-                             .WithRollOptions(options);
+                             .ApplyRollOptions(options);
 
         var baseDice = options.RollType == RollType.Flow ?
                        rolledDice.BestToKeep() :
@@ -50,18 +50,18 @@ public static class Roll
 
         var explosions = rolledDice.Explosions(options.Joss);
 
-        var diceResult = baseDice.DiceList.Concat(explosions)
+        var diceResult = baseDice.DicePool.Concat(explosions)
                                           .Aggregate(0, (total, current) => total += current.Result);
 
         var totalResult = diceResult + (int)options.AttributeScore + (int)options.EdgeBonus;
-        var baseDiceAreEqual = baseDice.DiceList[0].Result == baseDice.DiceList[1].Result;
+        var baseDiceAreEqual = baseDice.DicePool[0].Result == baseDice.DicePool[1].Result;
         var difficulty = (int)options.Difficulty;
 
         var result = CalculateResult(baseDiceAreEqual, totalResult, difficulty);
 
         return new StandardRollResult()
         {
-            BaseDice = baseDice.DiceList.Select(die => die.Result).ToList(),
+            BaseDice = baseDice.DicePool.Select(die => die.Result).ToList(),
             ExplosionDice = explosions.Select(die => die.Result).ToList(),
             DiceResult = diceResult,
             AttributeScore = (int)options.AttributeScore,
