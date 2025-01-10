@@ -44,7 +44,7 @@ public class RolledDiceTests
     public void RolledDice_ShouldThrow_IfDiceListIsEmpty()
     {
         // Arrange
-        var nonExistingDice = new List<RolledSingleDie>();
+        var nonExistingDice = new List<SingleRolledDie>();
 
         // Act
         Action initialization = () => new StandardRoll(nonExistingDice);
@@ -57,10 +57,10 @@ public class RolledDiceTests
     public void RolledDiceInitialization_ShouldThrow_IfDiceListContainsMultipleDiceTypes()
     {
         // Arrange
-        var existingDice = new List<RolledSingleDie>()
+        var existingDice = new List<SingleRolledDie>()
         {
-            new RolledSingleDie(DiceType.d10, 5),
-            new RolledSingleDie(DiceType.d100, 55)
+            new SingleRolledDie(DiceType.d10, 5),
+            new SingleRolledDie(DiceType.d100, 55)
         };
 
         // Act
@@ -74,8 +74,8 @@ public class RolledDiceTests
     public void AddingRolledDice_ShouldThrow_IfDiceTypesAreDifferent()
     {
         // Arrange
-        var list1 = new List<RolledSingleDie>() { new RolledSingleDie(DiceType.d10, 10) };
-        var list2 = new List<RolledSingleDie>() { new RolledSingleDie(DiceType.d100, 100) };
+        var list1 = new List<SingleRolledDie>() { new SingleRolledDie(DiceType.d10, 10) };
+        var list2 = new List<SingleRolledDie>() { new SingleRolledDie(DiceType.d100, 100) };
         var rolledDice1 = new StandardRoll(list1);
         var rolledDice2 = new StandardRoll(list2);
 

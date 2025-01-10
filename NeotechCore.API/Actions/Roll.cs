@@ -9,20 +9,22 @@ public static class Roll
 {
     private static Random _random = new Random();
 
-    public static RolledSingleDie SingleDie(DiceType diceType)
+    public static SingleRolledDie SingleDie(DiceType diceType)
     {
         var result = _random.Next(1, (int)diceType + 1);
-        return new RolledSingleDie(diceType, result);
+        return new SingleRolledDie(diceType, result);
     }
 
-    public static List<RolledSingleDie> MultipleDice(int numberOfDice, DiceType diceType = DiceType.d10)
+    public static List<SingleRolledDie> MultipleDice(int numberOfDice, DiceType diceType = DiceType.d10)
     {
-        return Enumerable.Range(1, numberOfDice).Select(die => SingleDie(diceType)).ToList();
+        return Enumerable.Range(1, numberOfDice)
+                         .Select(die => SingleDie(diceType))
+                         .ToList();
     }
 
     public static StandardRoll Dice(uint numberOfDice, DiceType diceType)
     {
-        var diceList = new List<RolledSingleDie>();
+        var diceList = new List<SingleRolledDie>();
         foreach (var _ in Enumerable.Range(1, (int)numberOfDice))
         {
             diceList.Add(SingleDie(diceType));

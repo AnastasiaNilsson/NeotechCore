@@ -4,18 +4,18 @@ namespace NeotechCore.API.Models;
 
 public class StandardRoll
 {
-    public List<RolledSingleDie> DicePool { get; }
-    public List<RolledSingleDie> SelectedBaseDice { get; }
-    public List<RolledSingleDie> Explosions { get; } = [];
-    public RollOptions Options { get; } = new();
+    public List<SingleRolledDie> DicePool { get; init; }
+    public List<SingleRolledDie> SelectedBaseDice { get; init; }
+    public List<SingleRolledDie> Explosions { get; init; } = [];
+    public RollOptions Options { get; init; } = new();
 
     public StandardRoll()
     {
-        DicePool = Enumerable.Range(1, 2).Select(die => new RolledSingleDie()).ToList();
+        DicePool = Enumerable.Range(1, 2).Select(die => new SingleRolledDie()).ToList();
         SelectedBaseDice = DicePool;
     }
 
-    public StandardRoll(List<RolledSingleDie> diceList) : this()
+    public StandardRoll(List<SingleRolledDie> diceList) : this()
     {
         var firstDie = diceList.FirstOrDefault();
         if (firstDie is null) throw RolledDiceException.EmptyDiceList;
@@ -23,7 +23,7 @@ public class StandardRoll
 
         DicePool = diceList;
     }
-    public StandardRoll(List<RolledSingleDie> diceList, RollOptions options) : this(diceList) => Options = options;
+    public StandardRoll(List<SingleRolledDie> diceList, RollOptions options) : this(diceList) => Options = options;
 
     public static StandardRoll operator +(StandardRoll setOne, StandardRoll setTwo)
     {

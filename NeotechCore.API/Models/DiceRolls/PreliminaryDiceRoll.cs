@@ -4,11 +4,11 @@ namespace NeotechCore.API.Models;
 
 public class PreliminaryDiceRoll : IDiceRoll
 {
-    public List<RolledSingleDie> DicePool { get; }
+    public List<SingleRolledDie> DicePool { get; }
     public RollOptions Options { get; }
     public DiceType DiceType { get => DicePool.First().DiceType; }
 
-    public PreliminaryDiceRoll(List<RolledSingleDie> diceList)
+    public PreliminaryDiceRoll(List<SingleRolledDie> diceList)
     {
         var firstDie = diceList.FirstOrDefault();
         if (firstDie is null) throw RolledDiceException.EmptyDiceList;
@@ -16,7 +16,7 @@ public class PreliminaryDiceRoll : IDiceRoll
 
         DicePool = diceList;
     }
-    public PreliminaryDiceRoll(List<RolledSingleDie> diceList, RollOptions options) : this(diceList) => Options = options;
+    public PreliminaryDiceRoll(List<SingleRolledDie> diceList, RollOptions options) : this(diceList) => Options = options;
 
     public static PreliminaryDiceRoll operator +(PreliminaryDiceRoll setOne, PreliminaryDiceRoll setTwo)
     {

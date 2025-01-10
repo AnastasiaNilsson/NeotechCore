@@ -2,13 +2,13 @@ namespace NeotechCore.Tests.UnitTests;
 
 public static class TestHelper
 {
-    public static List<RolledSingleDie> FakeDice(int[] results, DiceType diceType = DiceType.d10)
+    public static List<SingleRolledDie> FakeDice(int[] results, DiceType diceType = DiceType.d10)
     {
-        var diceCollection = new List<RolledSingleDie>();
+        var diceCollection = new List<SingleRolledDie>();
 
         foreach (var result in results)
         {
-            var fake = Mock.Of<RolledSingleDie>(die => die.Result == result && die.DiceType == diceType);
+            var fake = Mock.Of<SingleRolledDie>(die => die.Result == result && die.DiceType == diceType);
             diceCollection.Add(fake);
         }
 
