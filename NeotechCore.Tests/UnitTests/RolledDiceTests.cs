@@ -12,8 +12,8 @@ public class RolledDiceTests
     public void RolledDice_ShouldBe_CorrectlyInitialized()
     {
         // Arrange
-        var diceList1 = Roll.MultipleDice(2, DiceType.d100);
-        var diceList2 = Roll.MultipleDice(5, DiceType.d10);
+        var diceList1 = Roll.MultipleSingleDice(2, DiceType.d100);
+        var diceList2 = Roll.MultipleSingleDice(5, DiceType.d10);
         var modifiers1 = new RollOptions() { EdgeBonus = 10, Difficulty = 15 };
         var modifiers2 = new RollOptions() { EdgeBonus = 5, Difficulty = 25 };
 
@@ -90,8 +90,8 @@ public class RolledDiceTests
     public void AddingRolledDice_ShouldCorrectlyHandle_RollModifiers()
     {
         // Arrange
-        var rolledDice1 = new StandardRoll(Roll.MultipleDice(2), new RollOptions() { EdgeBonus = 0, Difficulty = 25 });
-        var rolledDice2 = new StandardRoll(Roll.MultipleDice(2), new RollOptions() { EdgeBonus = 5, Difficulty = 15 });
+        var rolledDice1 = new StandardRoll(Roll.MultipleSingleDice(2), new RollOptions() { EdgeBonus = 0, Difficulty = 25 });
+        var rolledDice2 = new StandardRoll(Roll.MultipleSingleDice(2), new RollOptions() { EdgeBonus = 5, Difficulty = 15 });
 
         // Act
         var newDice1 = rolledDice1 + rolledDice2;
@@ -113,7 +113,7 @@ public class RolledDiceTests
     public void HighestTwo_ShouldThrow_ForLessThanTwoDice()
     {
         // Arrange
-        var rolledDice = new StandardRoll(Roll.MultipleDice(1));
+        var rolledDice = new StandardRoll(Roll.MultipleSingleDice(1));
 
         // Act
         Action highestTwo = () => rolledDice.HighestTwo();

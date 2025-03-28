@@ -22,13 +22,9 @@ public static class Roll
                          .ToList();
     }
 
-    public static StandardRoll Dice(uint numberOfDice, DiceType diceType)
+    public static StandardRoll Standard(uint numberOfDice, DiceType diceType = DiceType.d10)
     {
-        var diceList = new List<SingleRolledDie>();
-        foreach (var _ in Enumerable.Range(1, (int)numberOfDice))
-        {
-            diceList.Add(SingleDie(diceType));
-        }
+        var diceList = MultipleDice((int)numberOfDice, diceType);
         return new StandardRoll(diceList);
     }
 
@@ -43,11 +39,11 @@ public static class Roll
                 throw RollException.ExtraDiceRequired(options.RollType);
         }
 
-        var rolledDice = Roll.Dice(2 + options.ExtraDice, DiceType.d10)
+        var rolledDice = Roll.Standard(2 + options.ExtraDice, DiceType.d10)
                              .ApplyRollOptions(options);
 
         var baseDice = options.RollType == RollType.Flow ?
-                       rolledDice.BestToKeep() :
+                       rolledDice.BestToKeep(options) :
                        rolledDice.HighestTwo();
 
         var explosions = rolledDice.Explosions(options.Joss);

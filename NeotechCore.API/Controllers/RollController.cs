@@ -33,7 +33,7 @@ public class RollController : ControllerBase
     {
         if (IsBadRequest(numberOfDice, diceType)) return BadRequest();
 
-        var diceResults = Roll.MultipleDice(numberOfDice, (DiceType)diceType).Select(die => die.Result);
+        var diceResults = Roll.MultipleSingleDice(numberOfDice, (DiceType)diceType).Select(die => die.Result);
         return Ok(diceResults);
     }
 
